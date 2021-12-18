@@ -1,0 +1,18 @@
+{
+    "python.pythonPath": "py-venv-windows\\Scripts\\python.exe",
+    "python.envFile": "${workspaceFolder}\\py-venv-windows",
+
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}\\py-venv-windows\\src"
+    ],
+
+    "python.testing.unittestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./test",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.promptToConfigure": true,
+}
