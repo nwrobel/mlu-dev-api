@@ -11,6 +11,7 @@ Supports FLAC, Mp3, and M4A audio file types.
 '''
 
 import logging
+from mlu.tags import values
 
 from mlu.tags.audiofmt import flac
 from mlu.tags.audiofmt import mp3
@@ -59,6 +60,32 @@ class AudioFileMetadataHandler:
         Returns tags of the audio file
         '''
         return self._audioFmtHandler.getTags()
+
+    def setTags(self, audioFileTags):
+        '''
+        Sets the tags on the audio file to those represented by the given AudioFileTags object.
+        This method performs a write operation on the audio file to write the given tag values.
+
+        Only the following tags will be set: 
+        DATE_ALL_PLAYS, DATE_LAST_PLAYED, PLAY_COUNT, VOTES, RATING
+
+        Coming later: allowing you to also set genre, lyrics, comment
+        
+        Validation is performed on each tag value and an AudioFileTagsValidationError will be thrown
+        if any tag values are invalid.
+        '''
+
+        # TODO: perform validation here
+        if (not isinstance(audioFileTags, values.AudioFileTags)):
+            raise ValueError("Given AudioFileTags object is not valid")
+
+        # Check to see whether or not the new tags to be set are actually new (did the values actually
+        # change?): if not, a write operation is not needed
+        currentTags = self.getTags()
+        if (currentTags.equals(audioFileTags)):
+            logger.debug("setTags() write operation skipped (no change needed): the current tag values are the same as the new given tag values")
+        else:
+            self._audioFmtHandler.setTags(audioFileTags)
 
     def getProperties(self):
         '''

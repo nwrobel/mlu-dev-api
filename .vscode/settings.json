@@ -3,7 +3,8 @@
     "python.envFile": "${workspaceFolder}\\py-venv-windows",
 
     "python.analysis.extraPaths": [
-        "${workspaceFolder}\\py-venv-windows\\src"
+        "${workspaceFolder}\\py-venv-windows\\src",
+        "${workspaceFolder}\\mlu"
     ],
 
     "python.testing.unittestEnabled": true,

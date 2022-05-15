@@ -20,11 +20,13 @@ from mlu.tags import values
 class AudioFormatHandlerFLAC:
     def __init__(self, audioFilepath):
         self.audioFilepath = audioFilepath
-        self.mutagenInterface = mutagen.File(audioFilepath)
+        self.mutagenInterface = None
 
     def getEmbeddedArtwork(self):
         '''
         '''
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
+
         artworksData = []
         for picture in self.mutagenInterface.pictures:
             artworksData.append(picture.data)
@@ -34,6 +36,8 @@ class AudioFormatHandlerFLAC:
     def getProperties(self):
         '''
         '''
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
+
         fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
         fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
         duration = self.mutagenInterface.info.length
@@ -71,6 +75,8 @@ class AudioFormatHandlerFLAC:
         '''
         Returns an AudioFileTags object for the tag values for the FLAC audio file
         '''
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
+
         title = self._getTagValueFromMutagenInterface('title')
         artist = self._getTagValueFromMutagenInterface('artist')
         album = self._getTagValueFromMutagenInterface('album')
@@ -188,3 +194,16 @@ class AudioFormatHandlerFLAC:
             tagValue = ''
 
         return tagValue  
+
+    def setTags(self, audioFileTags):
+        '''
+        '''
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
+
+        self.mutagenInterface['date_all_plays'] = audioFileTags.dateAllPlays
+        self.mutagenInterface['date_last_played'] = audioFileTags.dateLastPlayed
+        self.mutagenInterface['play_count'] = audioFileTags.playCount
+        self.mutagenInterface['votes'] = audioFileTags.votes
+        self.mutagenInterface['rating'] = audioFileTags.rating
+
+        self.mutagenInterface.save()

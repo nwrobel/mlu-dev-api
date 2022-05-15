@@ -10,6 +10,8 @@ Module containing class which reads data for a single mp3 audio file.
 
 import mutagen
 from mutagen.mp3 import BitrateMode
+from mutagen.easyid3 import EasyID3
+from mutagen.id3 import ID3, TXXX
 
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.file
@@ -21,26 +23,28 @@ from mlu.tags import values
 class AudioFormatHandlerMP3:
     def __init__(self, audioFilepath):
         self.audioFilepath = audioFilepath
-        self.mutagenInterface = mutagen.File(audioFilepath)
+        self.mutagenInterface = None
 
     def getEmbeddedArtwork(self):
-        mutagenInterface = mutagen.File(self.audioFilepath)
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
 
         artworksData = []
         pictureTags = []
-        mutagenTagKeys = list(mutagenInterface.keys())
+        mutagenTagKeys = list(self.mutagenInterface.keys())
 
         for tagKey in mutagenTagKeys:
             if ("APIC:" in tagKey):
                 pictureTags.append(tagKey)
 
         for picTag in pictureTags:
-            picData = mutagenInterface[picTag].data
+            picData = self.mutagenInterface[picTag].data
             artworksData.append(picData)
 
         return artworksData
 
     def getProperties(self):
+        self.mutagenInterface = mutagen.File(self.audioFilepath)
+
         fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
         fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
         duration = self.mutagenInterface.info.length
@@ -187,6 +191,31 @@ class AudioFormatHandlerMP3:
         )
 
         return audioFileTags
+
+    def setTags(self, audioFileTags):
+        '''
+        '''
+        # Use the EasyId3 interface for setting the standard Mp3 tags
+        # mutagenInterface = EasyID3(self.audioFilepath)
+
+        # mutagenInterface['title'] = audioFileTags.title
+        # mutagenInterface['artist'] = audioFileTags.artist
+        # mutagenInterface['album'] = audioFileTags.album
+        # mutagenInterface['albumartist'] = audioFileTags.albumArtist
+        # mutagenInterface['genre'] = audioFileTags.genre
+
+        # mutagenInterface.save()
+        
+        # Use the ID3 interface for setting the nonstandard Mp3 tags
+        mutagenInterface = ID3(self.audioFilepath, v2_version=3)
+
+        mutagenInterface['TXXX:DATE_ALL_PLAYS'] = TXXX(3, desc='DATE_ALL_PLAYS', text=audioFileTags.dateAllPlays)
+        mutagenInterface['TXXX:DATE_LAST_PLAYED'] = TXXX(3, desc='DATE_LAST_PLAYED', text=audioFileTags.dateLastPlayed)
+        mutagenInterface['TXXX:PLAY_COUNT'] = TXXX(3, desc='PLAY_COUNT', text=audioFileTags.playCount)
+        mutagenInterface['TXXX:VOTES'] = TXXX(3, desc='VOTES', text=audioFileTags.votes)
+        mutagenInterface['TXXX:RATING'] = TXXX(3, desc='RATING', text=audioFileTags.rating)
+
+        mutagenInterface.save(v2_version=3)
 
     def _removeUnneededTagKeysFromTagKeysList(self, mp3TagKeys):
         ignoreKeysMp3 = [

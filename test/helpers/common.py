@@ -1,12 +1,12 @@
 '''
-mlutest.helpers.common
+test.helpers.common
 
 Author:   Nick Wrobel
 Created:  2020-12-20
 Modified: 2021-12-17
 
-This module contains functions that are commonly needed/used by various MLU unit tests in the
-mlutest package. They deal with setting up and teardown of test cases and creation of random test
+This module contains functions that are commonly needed/used by various unit tests in the
+test package. They deal with setting up and teardown of test cases and creation of random test
 data.
 '''
 
@@ -62,7 +62,7 @@ def getRandomFilepath():
     return randomFilepath
 
  
-def getRandomString(length=0, allowDigits=False, allowUppercase=False, allowSpecial=False, allowSpace=False):
+def getRandomString(length=0, allowDigits=True, allowUppercase=True, allowSpecial=True, allowSpace=True):
     """
     Returns a pseudo-random string. By default, the string will be composed of 
     only lowercase letters (no digits). You can also specify that digits, uppercase letters, and 

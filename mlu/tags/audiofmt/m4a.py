@@ -242,3 +242,24 @@ class AudioFormatHandlerM4A:
             tagValue = ''
 
         return tagValue
+
+    def setTags(self, audioFileTags):
+        '''
+        '''
+        mutagenInterface = MP4(self.audioFilepath)
+
+        # Standard M4A tags
+        # mutagenInterface['\xa9nam'] = audioFileTags.title
+        # mutagenInterface['\xa9ART'] = audioFileTags.artist
+        # mutagenInterface['\xa9alb'] = audioFileTags.album
+        # mutagenInterface['aART'] = audioFileTags.albumArtist
+        # mutagenInterface['\xa9gen'] = audioFileTags.genre
+
+        # Nonstandard (custom) M4A tags
+        mutagenInterface['----:com.apple.iTunes:DATE_ALL_PLAYS'] = (audioFileTags.dateAllPlays).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:DATE_LAST_PLAYED'] = (audioFileTags.dateLastPlayed).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:PLAY_COUNT'] = (audioFileTags.playCount).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:VOTES'] = (audioFileTags.votes).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:RATING'] = (audioFileTags.rating).encode('utf-8')
+
+        mutagenInterface.save()

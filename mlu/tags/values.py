@@ -60,21 +60,33 @@ class AudioFileTags:
         self.rating = rating
         self.OTHER_TAGS = OTHER_TAGS
 
-    # def equals(self, otherAudioFileTags):
-    #     tagsAreEqual = (
-    #         self.title == otherAudioFileTags.title and
-    #         self.artist == otherAudioFileTags.artist and
-    #         self.album == otherAudioFileTags.album and
-    #         self.albumArtist == otherAudioFileTags.albumArtist and
-    #         self.genre == otherAudioFileTags.genre and
-    #         self.dateAllPlays == otherAudioFileTags.dateAllPlays and
-    #         self.dateLastPlayed == otherAudioFileTags.dateLastPlayed and
-    #         self.playCount == otherAudioFileTags.playCount and
-    #         self.votes == otherAudioFileTags.votes and
-    #         self.rating == otherAudioFileTags.rating
-    #     )
+    def equals(self, otherAudioFileTags):
+        tagsAreEqual = (
+            self.title == otherAudioFileTags.title and
+            self.artist == otherAudioFileTags.artist and
+            self.album == otherAudioFileTags.album and
+            self.albumArtist == otherAudioFileTags.albumArtist and
+            self.composer == otherAudioFileTags.composer and
+            self.date == otherAudioFileTags.date and
+            self.genre == otherAudioFileTags.genre and
+            self.trackNumber == otherAudioFileTags.trackNumber and
+            self.totalTracks == otherAudioFileTags.totalTracks and
+            self.discNumber == otherAudioFileTags.discNumber and
+            self.totalDiscs == otherAudioFileTags.totalDiscs and
+            self.bpm == otherAudioFileTags.bpm and
+            self.key == otherAudioFileTags.key and
+            self.lyrics == otherAudioFileTags.lyrics and
+            self.comment == otherAudioFileTags.comment and
+            self.dateAdded == otherAudioFileTags.dateAdded and
+            self.dateAllPlays == otherAudioFileTags.dateAllPlays and
+            self.dateLastPlayed == otherAudioFileTags.dateLastPlayed and
+            self.playCount == otherAudioFileTags.playCount and
+            self.votes == otherAudioFileTags.votes and
+            self.rating == otherAudioFileTags.rating and
+            self.OTHER_TAGS == otherAudioFileTags.OTHER_TAGS
+        )
 
-    #     return tagsAreEqual
+        return tagsAreEqual
 
 class AudioFileProperties:
     '''

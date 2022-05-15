@@ -20,6 +20,7 @@ sys.path.insert(0, projectRoot)
 
 from mlu.settings import MLUSettings
 import mlu.tags.io
+import mlu.tags.values
 import mlu.tags.audiofmt.flac
 import mlu.tags.audiofmt.mp3
 import mlu.tags.audiofmt.m4a
@@ -146,6 +147,7 @@ class TestTagsIOModule(unittest.TestCase):
         for testAudioFile in self.testData.testAudioFilesFLAC:
             handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
+            self._checkAudioFileTagIOHandlerWrite(handler)
             
     def test_AudioFileMetadataHandler_MP3(self):
         '''
@@ -154,6 +156,7 @@ class TestTagsIOModule(unittest.TestCase):
         for testAudioFile in self.testData.testAudioFilesMp3:
             handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
+            self._checkAudioFileTagIOHandlerWrite(handler)
 
     def test_AudioFileMetadataHandler_M4A(self):
         '''
@@ -162,6 +165,7 @@ class TestTagsIOModule(unittest.TestCase):
         for testAudioFile in self.testData.testAudioFilesM4A:
             handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
+            self._checkAudioFileTagIOHandlerWrite(handler)
 
     def _checkAudioFileTagIOHandlerRead(self, audioFileMetadataHandler, expectedTagValues):
         '''
@@ -180,8 +184,11 @@ class TestTagsIOModule(unittest.TestCase):
         actualTagValues = tags.__dict__        
 
         # Remove the otherTags value from expected tags (we will check this later)
-        expectedOtherTags = expectedTagValues['otherTags']
-        del expectedTagValues['otherTags']
+        try:
+            expectedOtherTags = expectedTagValues['OTHER_TAGS']
+            del expectedTagValues['OTHER_TAGS']
+        except KeyError:
+            expectedOtherTags = {}
 
         # Check that all the expected tags are in the returned tags
         for tagName in expectedTagValues:
@@ -204,43 +211,35 @@ class TestTagsIOModule(unittest.TestCase):
             self.assertEqual(expectedTagValue, actualTagValues['OTHER_TAGS'][expectedTagName])
 
 
-    # def _checkAudioFileTagIOHandlerWrite(self, audioFileTagIOHandler):
-    #     '''
-    #     Tests tag writing for any given test AudioFileTagIOHandler instance. Used as a 
-    #     helper function.
+    def _checkAudioFileTagIOHandlerWrite(self, audioFileTagIOHandler):
+        '''
+        Tests tag writing for any given test AudioFileTagIOHandler instance. Used as a 
+        helper function.
 
-    #     The test will check that new tag values can be written via the handler.
+        The test will check that new tag values can be written via the handler.
 
-    #     Params:
-    #         audioFileTagIOHandler: the handler instance to test (is defined with a test audio file type)
-    #     '''
-    #     tags = audioFileTagIOHandler.getTags()
-    #     tagNames = tags.__dict__ 
-    #     newTagValues = {}
+        Params:
+            audioFileTagIOHandler: the handler instance to test (is defined with a test audio file type)
+        '''
+        tags = audioFileTagIOHandler.getTags()
+        newTagValues = {}
 
-    #     # Write the new tags
-    #     for tagName in tagNames:
-    #         if (tagName == 'date'):
-    #             newTagValue = '2001'
-    #         elif (tagName == 'trackNumber'):
-    #             newTagValue = '4'
-    #         elif (tagName == 'totalTracks'):
-    #             newTagValue = '33'
-    #         elif (tagName == 'discNumber'):
-    #             newTagValue = '1'
-    #         elif (tagName == 'totalDiscs'):
-    #             newTagValue = '2'
-    #         else:
-    #             newTagValue = test.helpers.getRandomString(length=100, allowDigits=True, allowUppercase=True, allowSpecial=True, allowSpace=True)
-    #             newTagValue = newTagValue.replace('/', '')
+        newTagValues['dateAllPlays'] = test.helpers.common.getRandomString(length=20, allowSpecial=False)
+        newTagValues['dateLastPlayed'] = test.helpers.common.getRandomString(length=20, allowSpecial=False)
+        newTagValues['playCount'] = test.helpers.common.getRandomString(length=20, allowSpecial=False)
+        newTagValues['votes'] = test.helpers.common.getRandomString(length=20, allowSpecial=False)
+        newTagValues['rating']  = test.helpers.common.getRandomString(length=20, allowSpecial=False)
 
-    #         newTagValues[tagName] = newTagValue
+        tags.dateAllPlays = newTagValues['dateAllPlays']
+        tags.dateLastPlayed = newTagValues['dateLastPlayed']
+        tags.playCount = newTagValues['playCount']
+        tags.votes = newTagValues['votes']
+        tags.rating = newTagValues['rating']
 
-    #     newAudioFileTags = mlu.tags.io.AudioFileTags(**newTagValues)
-    #     audioFileTagIOHandler.setTags(newAudioFileTags)
+        audioFileTagIOHandler.setTags(tags)
 
-    #     # Use the read test function to ensure the tags are now set to the new tag values 
-    #     self._checkAudioFileTagIOHandlerRead(audioFileTagIOHandler, expectedTagValues=newTagValues)
+        # Use the read test function to ensure the tags are now set to the new tag values 
+        self._checkAudioFileTagIOHandlerRead(audioFileTagIOHandler, expectedTagValues=newTagValues)
 
 if __name__ == '__main__':
     unittest.main()
