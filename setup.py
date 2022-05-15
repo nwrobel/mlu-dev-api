@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="nwrobel-mlu-dev-api",
-    version="2021.12.17.0",
+    version="2022.05.15.1",
     author="Nick Wrobel",
     author_email="nick@nwrobel.com",
     description="Package containing various modules dealing with audio files and music libraries",

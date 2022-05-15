@@ -1,10 +1,6 @@
 '''
 mlu.tags.audiofmt.m4a
 
-Author:   Nick Wrobel
-Created:  2021-12-11
-Modified: 2021-12-17
-
 Module containing class which reads data for a single m4a audio file.
 '''
 
@@ -21,14 +17,15 @@ from mlu.tags import values
 class AudioFormatHandlerM4A:
     def __init__(self, audioFilepath):
         self.audioFilepath = audioFilepath
-        self.mutagenInterface = mutagen.File(audioFilepath)
 
     def getEmbeddedArtwork(self):
         '''
-        '''        
+        '''
+        mutagenInterface = mutagen.File(self.audioFilepath)
+
         artworkData = []
         try:
-            picsData = self.mutagenInterface.tags['covr']
+            picsData = mutagenInterface.tags['covr']
             if (isinstance(picsData, list)):
                 for picData in picsData:
                     artworkData.append(bytes(picData))
@@ -44,20 +41,22 @@ class AudioFormatHandlerM4A:
     def getProperties(self):
         '''
         '''
+        mutagenInterface = mutagen.File(self.audioFilepath)
+
         fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
         fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
-        duration = self.mutagenInterface.info.length
+        duration = mutagenInterface.info.length
         format = 'M4A'
-        codec = self.mutagenInterface.info.codec_description
-        bitRate = mypycommons.convert.bitsToKilobits(self.mutagenInterface.info.bitrate)
-        bitDepth = self.mutagenInterface.info.bits_per_sample
-        numChannels = self.mutagenInterface.info.channels
-        sampleRate = self.mutagenInterface.info.sample_rate
+        codec = mutagenInterface.info.codec_description
+        bitRate = mypycommons.convert.bitsToKilobits(mutagenInterface.info.bitrate)
+        bitDepth = mutagenInterface.info.bits_per_sample
+        numChannels = mutagenInterface.info.channels
+        sampleRate = mutagenInterface.info.sample_rate
         replayGain = {
-            'albumGain': self._getTagValueFromMutagenInterface('----:com.apple.iTunes:replaygain_album_gain'),
-            'albumPeak': self._getTagValueFromMutagenInterface('----:com.apple.iTunes:replaygain_album_peak'),
-            'trackGain': self._getTagValueFromMutagenInterface('----:com.apple.iTunes:replaygain_track_gain'),
-            'trackPeak': self._getTagValueFromMutagenInterface('----:com.apple.iTunes:replaygain_track_peak')
+            'albumGain': self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:replaygain_album_gain'),
+            'albumPeak': self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:replaygain_album_peak'),
+            'trackGain': self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:replaygain_track_gain'),
+            'trackPeak': self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:replaygain_track_peak')
         }
 
         audioProperties = values.AudioFileProperties(
@@ -81,18 +80,20 @@ class AudioFormatHandlerM4A:
         '''
         Returns an AudioFileTags object for the tag values for the M4A audio file
         '''
+        mutagenInterface = mutagen.File(self.audioFilepath)
+
         # Standard M4A tags
-        title = self._getTagValueFromMutagenInterface('\xa9nam')
-        artist = self._getTagValueFromMutagenInterface('\xa9ART')
-        album = self._getTagValueFromMutagenInterface('\xa9alb')
-        albumArtist = self._getTagValueFromMutagenInterface('aART')
-        composer = self._getTagValueFromMutagenInterface('\xa9wrt')
-        date = self._getTagValueFromMutagenInterface('\xa9day')
-        genre = self._getTagValueFromMutagenInterface('\xa9gen')
-        lyrics = self._getTagValueFromMutagenInterface('\xa9lyr')
-        comment = self._getTagValueFromMutagenInterface('\xa9cmt')
-        trackNumOfTotal = self._getTagValueFromMutagenInterface('trkn')
-        discNumOfTotal = self._getTagValueFromMutagenInterface('disk')
+        title = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9nam')
+        artist = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9ART')
+        album = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9alb')
+        albumArtist = self._getTagValueFromMutagenInterface(mutagenInterface, 'aART')
+        composer = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9wrt')
+        date = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9day')
+        genre = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9gen')
+        lyrics = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9lyr')
+        comment = self._getTagValueFromMutagenInterface(mutagenInterface, '\xa9cmt')
+        trackNumOfTotal = self._getTagValueFromMutagenInterface(mutagenInterface, 'trkn')
+        discNumOfTotal = self._getTagValueFromMutagenInterface(mutagenInterface, 'disk')
 
         if (isinstance(trackNumOfTotal, tuple)):
             trackNumber = trackNumOfTotal[0]
@@ -118,14 +119,14 @@ class AudioFormatHandlerM4A:
         
 
         # Nonstandard (custom) M4A tags
-        key = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:key')
-        bpm = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:BPM')
-        dateAdded = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:DATE_ADDED')
-        dateAllPlays = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:DATE_ALL_PLAYS')
-        dateLastPlayed = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:DATE_LAST_PLAYED') 
-        playCount = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:PLAY_COUNT')
-        votes = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:VOTES')
-        rating = self._getTagValueFromMutagenInterface('----:com.apple.iTunes:RATING')
+        key = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:key')
+        bpm = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:BPM')
+        dateAdded = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:DATE_ADDED')
+        dateAllPlays = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:DATE_ALL_PLAYS')
+        dateLastPlayed = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:DATE_LAST_PLAYED') 
+        playCount = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:PLAY_COUNT')
+        votes = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:VOTES')
+        rating = self._getTagValueFromMutagenInterface(mutagenInterface, '----:com.apple.iTunes:RATING')
         otherTags = {}
 
         tagFieldKeysM4A = [
@@ -150,7 +151,7 @@ class AudioFormatHandlerM4A:
             '----:com.apple.iTunes:RATING'
         ]
 
-        mutagenTagKeys = list(self.mutagenInterface.keys())
+        mutagenTagKeys = list(mutagenInterface.keys())
         relevantTagKeys = self._removeUnneededTagKeysFromTagKeysList(mutagenTagKeys)
 
         otherTagKeys = []
@@ -159,7 +160,7 @@ class AudioFormatHandlerM4A:
                 otherTagKeys.append(tagKey)
 
         for tagKey in otherTagKeys:
-            tagValue = self._getTagValueFromMutagenInterface(tagKey)
+            tagValue = self._getTagValueFromMutagenInterface(mutagenInterface, tagKey)
             tagNameFormatted = self._formatM4AKeyToTagName(tagKey)
             otherTags[tagNameFormatted] = tagValue
 
@@ -189,6 +190,27 @@ class AudioFormatHandlerM4A:
         )
         return audioFileTags
 
+    def setTags(self, audioFileTags):
+        '''
+        '''
+        mutagenInterface = MP4(self.audioFilepath)
+
+        # Standard M4A tags
+        # mutagenInterface['\xa9nam'] = audioFileTags.title
+        # mutagenInterface['\xa9ART'] = audioFileTags.artist
+        # mutagenInterface['\xa9alb'] = audioFileTags.album
+        # mutagenInterface['aART'] = audioFileTags.albumArtist
+        # mutagenInterface['\xa9gen'] = audioFileTags.genre
+
+        # Nonstandard (custom) M4A tags
+        mutagenInterface['----:com.apple.iTunes:DATE_ALL_PLAYS'] = (audioFileTags.dateAllPlays).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:DATE_LAST_PLAYED'] = (audioFileTags.dateLastPlayed).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:PLAY_COUNT'] = (audioFileTags.playCount).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:VOTES'] = (audioFileTags.votes).encode('utf-8')
+        mutagenInterface['----:com.apple.iTunes:RATING'] = (audioFileTags.rating).encode('utf-8')
+
+        mutagenInterface.save()
+
     def _removeUnneededTagKeysFromTagKeysList(self, m4aKeys):
         keysToRemove = [
             'covr',
@@ -216,10 +238,10 @@ class AudioFormatHandlerM4A:
 
         return tagName.lower()
 
-    def _getTagValueFromMutagenInterface(self, mutagenKey):
+    def _getTagValueFromMutagenInterface(self, mutagenInterface, mutagenKey):
 
         try:    
-            mutagenValue = self.mutagenInterface.tags[mutagenKey]
+            mutagenValue = mutagenInterface.tags[mutagenKey]
 
             if ('----:com.apple.iTunes:' in mutagenKey):
                 if (len(mutagenValue) == 1):
@@ -242,24 +264,3 @@ class AudioFormatHandlerM4A:
             tagValue = ''
 
         return tagValue
-
-    def setTags(self, audioFileTags):
-        '''
-        '''
-        mutagenInterface = MP4(self.audioFilepath)
-
-        # Standard M4A tags
-        # mutagenInterface['\xa9nam'] = audioFileTags.title
-        # mutagenInterface['\xa9ART'] = audioFileTags.artist
-        # mutagenInterface['\xa9alb'] = audioFileTags.album
-        # mutagenInterface['aART'] = audioFileTags.albumArtist
-        # mutagenInterface['\xa9gen'] = audioFileTags.genre
-
-        # Nonstandard (custom) M4A tags
-        mutagenInterface['----:com.apple.iTunes:DATE_ALL_PLAYS'] = (audioFileTags.dateAllPlays).encode('utf-8')
-        mutagenInterface['----:com.apple.iTunes:DATE_LAST_PLAYED'] = (audioFileTags.dateLastPlayed).encode('utf-8')
-        mutagenInterface['----:com.apple.iTunes:PLAY_COUNT'] = (audioFileTags.playCount).encode('utf-8')
-        mutagenInterface['----:com.apple.iTunes:VOTES'] = (audioFileTags.votes).encode('utf-8')
-        mutagenInterface['----:com.apple.iTunes:RATING'] = (audioFileTags.rating).encode('utf-8')
-
-        mutagenInterface.save()

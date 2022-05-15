@@ -1,10 +1,6 @@
 '''
 Tests for mlu.tags.io, which also tests the mlu.tags.audiofmt modules.
 
-Author:   Nick Wrobel
-Created:  2021-12-11
-Modified: 2021-12-17
-
 '''
 
 import unittest

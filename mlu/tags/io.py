@@ -1,11 +1,6 @@
 '''
 mlu.tags.io
 
-Author:   Nick Wrobel
-Created:  2020-12-20
-Modified: 2021-12-17
-
-
 This module deals with reading tag and property values and album art of an audio file. 
 Supports FLAC, Mp3, and M4A audio file types. 
 '''

@@ -1,10 +1,6 @@
 '''
 mlu.tags.audiofmt.mp3
 
-Author:   Nick Wrobel
-Created:  2021-12-11
-Modified: 2021-12-17
-
 Module containing class which reads data for a single mp3 audio file.
 '''
 
@@ -23,34 +19,33 @@ from mlu.tags import values
 class AudioFormatHandlerMP3:
     def __init__(self, audioFilepath):
         self.audioFilepath = audioFilepath
-        self.mutagenInterface = None
 
     def getEmbeddedArtwork(self):
-        self.mutagenInterface = mutagen.File(self.audioFilepath)
+        mutagenInterface = mutagen.File(self.audioFilepath)
 
         artworksData = []
         pictureTags = []
-        mutagenTagKeys = list(self.mutagenInterface.keys())
+        mutagenTagKeys = list(mutagenInterface.keys())
 
         for tagKey in mutagenTagKeys:
             if ("APIC:" in tagKey):
                 pictureTags.append(tagKey)
 
         for picTag in pictureTags:
-            picData = self.mutagenInterface[picTag].data
+            picData = mutagenInterface[picTag].data
             artworksData.append(picData)
 
         return artworksData
 
     def getProperties(self):
-        self.mutagenInterface = mutagen.File(self.audioFilepath)
+        mutagenInterface = mutagen.File(self.audioFilepath)
 
         fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
         fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
-        duration = self.mutagenInterface.info.length
+        duration = mutagenInterface.info.length
         format = 'MP3'
 
-        bitRateModeType = self.mutagenInterface.info.bitrate_mode
+        bitRateModeType = mutagenInterface.info.bitrate_mode
         if (bitRateModeType == BitrateMode.CBR):
             bitRateMode = 'CBR'
         elif (bitRateModeType == BitrateMode.VBR):
@@ -60,10 +55,10 @@ class AudioFormatHandlerMP3:
         else:
             bitRateMode = ''
 
-        encoder = "{} ({})".format(self.mutagenInterface.info.encoder_info, self.mutagenInterface.info.encoder_settings)
-        bitRate = mypycommons.convert.bitsToKilobits(self.mutagenInterface.info.bitrate)
-        numChannels = self.mutagenInterface.info.channels
-        sampleRate = self.mutagenInterface.info.sample_rate
+        encoder = "{} ({})".format(mutagenInterface.info.encoder_info, mutagenInterface.info.encoder_settings)
+        bitRate = mypycommons.convert.bitsToKilobits(mutagenInterface.info.bitrate)
+        numChannels = mutagenInterface.info.channels
+        sampleRate = mutagenInterface.info.sample_rate
         replayGain = {
             'albumGain': self._getTagValueFromMutagenInterface('TXXX:replaygain_album_gain'),
             'albumPeak': self._getTagValueFromMutagenInterface('TXXX:replaygain_album_peak'),
@@ -91,16 +86,18 @@ class AudioFormatHandlerMP3:
         '''
         Returns an AudioFileTags object for the tag values for the Mp3 audio file
         '''
-        title = self._getTagValueFromMutagenInterface('TIT2')
-        artist = self._getTagValueFromMutagenInterface('TPE1')
-        album = self._getTagValueFromMutagenInterface('TALB')
-        albumArtist = self._getTagValueFromMutagenInterface('TPE2')
-        genre = self._getTagValueFromMutagenInterface('TCON')
-        bpm = self._getTagValueFromMutagenInterface('TBPM')
-        date = self._getTagValueFromMutagenInterface('TDRC').text
+        mutagenInterface = mutagen.File(self.audioFilepath)
 
-        trackNumOfTotal = self._getTagValueFromMutagenInterface('TRCK')
-        discNumOfTotal = self._getTagValueFromMutagenInterface('TPOS')
+        title = self._getTagValueFromMutagenInterface(mutagenInterface, 'TIT2')
+        artist = self._getTagValueFromMutagenInterface(mutagenInterface, 'TPE1')
+        album = self._getTagValueFromMutagenInterface(mutagenInterface, 'TALB')
+        albumArtist = self._getTagValueFromMutagenInterface(mutagenInterface, 'TPE2')
+        genre = self._getTagValueFromMutagenInterface(mutagenInterface, 'TCON')
+        bpm = self._getTagValueFromMutagenInterface(mutagenInterface, 'TBPM')
+        date = self._getTagValueFromMutagenInterface(mutagenInterface, 'TDRC').text
+
+        trackNumOfTotal = self._getTagValueFromMutagenInterface(mutagenInterface, 'TRCK')
+        discNumOfTotal = self._getTagValueFromMutagenInterface(mutagenInterface, 'TPOS')
 
         if ('/' in trackNumOfTotal):
             parts = trackNumOfTotal.split('/')
@@ -118,16 +115,16 @@ class AudioFormatHandlerMP3:
             discNumber = discNumOfTotal
             totalDiscs = ''
 
-        composer = self._getTagValueFromMutagenInterface('TCOM')
-        key = self._getTagValueFromMutagenInterface('TXXX:Key')
-        lyrics = self._getTagValueFromMutagenInterface('TXXX:LYRICS')
-        comment = self._getTagValueFromMutagenInterface('COMM::eng')
-        dateAdded = self._getTagValueFromMutagenInterface('TXXX:DATE_ADDED')
-        dateAllPlays = self._getTagValueFromMutagenInterface('TXXX:DATE_ALL_PLAYS')
-        dateLastPlayed = self._getTagValueFromMutagenInterface('TXXX:DATE_LAST_PLAYED') 
-        playCount = self._getTagValueFromMutagenInterface('TXXX:PLAY_COUNT')
-        votes = self._getTagValueFromMutagenInterface('TXXX:VOTES')
-        rating = self._getTagValueFromMutagenInterface('TXXX:RATING')
+        composer = self._getTagValueFromMutagenInterface(mutagenInterface, 'TCOM')
+        key = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:Key')
+        lyrics = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:LYRICS')
+        comment = self._getTagValueFromMutagenInterface(mutagenInterface, 'COMM::eng')
+        dateAdded = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:DATE_ADDED')
+        dateAllPlays = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:DATE_ALL_PLAYS')
+        dateLastPlayed = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:DATE_LAST_PLAYED') 
+        playCount = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:PLAY_COUNT')
+        votes = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:VOTES')
+        rating = self._getTagValueFromMutagenInterface(mutagenInterface, 'TXXX:RATING')
         otherTags = {}
 
         tagFieldKeysMp3 = [
@@ -152,7 +149,7 @@ class AudioFormatHandlerMP3:
             'TXXX:RATING'
         ]
 
-        mutagenTagKeys = list(self.mutagenInterface.keys())
+        mutagenTagKeys = list(mutagenInterface.keys())
         relevantTagKeys = self._removeUnneededTagKeysFromTagKeysList(mutagenTagKeys)
 
         otherTagKeys = []
@@ -161,7 +158,7 @@ class AudioFormatHandlerMP3:
                 otherTagKeys.append(tagKey)
 
         for tagKey in otherTagKeys:
-            tagValue = self._getTagValueFromMutagenInterface(tagKey)
+            tagValue = self._getTagValueFromMutagenInterface(mutagenInterface, tagKey)
             tagNameFormatted = self._formatMp3KeyToTagName(tagKey)
             otherTags[tagNameFormatted] = tagValue
 
@@ -244,9 +241,9 @@ class AudioFormatHandlerMP3:
 
         return tagName.lower()
 
-    def _getTagValueFromMutagenInterface(self, mutagenKey):
+    def _getTagValueFromMutagenInterface(self, mutagenInterface, mutagenKey):
         try:
-            mutagenValue = self.mutagenInterface[mutagenKey].text
+            mutagenValue = mutagenInterface[mutagenKey].text
 
             if (len(mutagenValue) == 1):
                 tagValue = mutagenValue[0]
