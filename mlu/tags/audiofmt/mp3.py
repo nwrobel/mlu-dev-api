@@ -256,3 +256,13 @@ class AudioFormatHandlerMP3:
             tagValue = ''
 
         return tagValue 
+
+    def setCustomTag(self, tagName, value):
+        mutagenInterface = ID3(self.audioFilepath, v2_version=3)
+
+        tagName = tagName.upper()
+        tagKey = "TXXX:{}".format(tagName)
+
+        mutagenInterface[tagKey] = TXXX(3, desc=tagName, text=value)
+
+        mutagenInterface.save(v2_version=3)

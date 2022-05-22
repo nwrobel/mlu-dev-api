@@ -264,3 +264,12 @@ class AudioFormatHandlerM4A:
             tagValue = ''
 
         return tagValue
+
+    def setCustomTag(self, tagName, value):
+        mutagenInterface = MP4(self.audioFilepath)
+
+        tagName = tagName.upper()
+        tagKey = "----:com.apple.iTunes:{}".format(tagName)
+        mutagenInterface[tagKey] = (value).encode('utf-8')
+
+        mutagenInterface.save()

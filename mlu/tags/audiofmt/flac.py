@@ -199,4 +199,12 @@ class AudioFormatHandlerFLAC:
         except KeyError:
             tagValue = ''
 
-        return tagValue  
+        return tagValue 
+
+    def setCustomTag(self, tagName, value):
+        mutagenInterface = mutagen.File(self.audioFilepath)
+
+        tagName = tagName.lower()
+        mutagenInterface[tagName] = value
+
+        mutagenInterface.save()

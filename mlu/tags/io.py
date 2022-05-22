@@ -11,6 +11,7 @@ from mlu.tags import values
 from mlu.tags.audiofmt import flac
 from mlu.tags.audiofmt import mp3
 from mlu.tags.audiofmt import m4a
+from mlu.tags.audiofmt import oggOpus
 
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.file
@@ -18,7 +19,7 @@ import com.nwrobel.mypycommons.time
 
 logger = logging.getLogger("mluGlobalLogger")
 
-SUPPORTED_AUDIO_TYPES = ['flac', 'mp3', 'm4a']
+SUPPORTED_AUDIO_TYPES = ['flac', 'mp3', 'm4a', 'opus']
 
 class AudioFileMetadataHandler:
     '''
@@ -49,6 +50,9 @@ class AudioFileMetadataHandler:
 
         elif (self._audioFileType == 'm4a'):
             self._audioFmtHandler = m4a.AudioFormatHandlerM4A(self.audioFilepath)
+
+        elif (self._audioFileType == 'opus'):
+            self._audioFmtHandler = oggOpus.AudioFormatHandlerOggOpus(self.audioFilepath)
 
     def getTags(self):
         '''
@@ -94,6 +98,11 @@ class AudioFileMetadataHandler:
         '''
         return self._audioFmtHandler.getEmbeddedArtwork()
 
+    def setCustomTag(tagName, value):
+        '''
+        Sets the value of a given custom (nonstandard) tag for the audio file. 
+        '''
+        self._audioFmtHandler.setCustomTag(tagName, value)
 
 
     

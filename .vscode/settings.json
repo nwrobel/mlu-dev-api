@@ -2,7 +2,7 @@
     "python.pythonPath": "py-venv-windows\\Scripts\\python.exe",
     "python.envFile": "${workspaceFolder}\\py-venv-windows",
 
-    "python.analysis.extraPaths": [
+    "python.autoComplete.extraPaths": [
         "${workspaceFolder}\\py-venv-windows\\src",
         "${workspaceFolder}\\mlu"
     ],
@@ -16,4 +16,8 @@
         "*_test.py"
     ],
     "python.testing.promptToConfigure": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}\\py-venv-windows\\src",
+        "${workspaceFolder}\\mlu"
+    ],
 }

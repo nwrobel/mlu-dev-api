@@ -47,36 +47,26 @@ class TestData:
         flacTestFilesData = [tagData['testfiles'] for tagData in testAudioFilesTagData if tagData['filetype'] == 'flac'][0]
         mp3TestFilesData = [tagData['testfiles'] for tagData in testAudioFilesTagData if tagData['filetype'] == 'mp3'][0]
         m4aTestFilesData = [tagData['testfiles'] for tagData in testAudioFilesTagData if tagData['filetype'] == 'm4a'][0]
+        opusTestFilesData = [tagData['testfiles'] for tagData in testAudioFilesTagData if tagData['filetype'] == 'opus'][0]
 
-        self.testAudioFilesFLAC = []
-        self.testAudioFilesMp3 = []
-        self.testAudioFilesM4A = []
+        self.testAudioFilesFLAC = self.getTestFilesFromData(testAudioFilesDir, flacTestFilesData)
+        self.testAudioFilesMp3 = self.getTestFilesFromData(testAudioFilesDir, mp3TestFilesData)
+        self.testAudioFilesM4A = self.getTestFilesFromData(testAudioFilesDir, m4aTestFilesData)
+        self.testAudioFilesOggOpus = self.getTestFilesFromData(testAudioFilesDir, opusTestFilesData)
 
-        for flacTestFile in flacTestFilesData:
-            testAudioFile = TestAudioFile(
-                filepath=mypycommons.file.joinPaths(testAudioFilesDir, flacTestFile['filename']),
-                tagValues=flacTestFile['tagValues']
-            )
-            self.testAudioFilesFLAC.append(testAudioFile)
-
-        for mp3TestFile in mp3TestFilesData:
-            testAudioFile = TestAudioFile(
-                filepath=mypycommons.file.joinPaths(testAudioFilesDir, mp3TestFile['filename']),
-                tagValues=mp3TestFile['tagValues']
-            )
-            self.testAudioFilesMp3.append(testAudioFile)
-
-        for m4aTestFile in m4aTestFilesData:
-            testAudioFile = TestAudioFile(
-                filepath=mypycommons.file.joinPaths(testAudioFilesDir, m4aTestFile['filename']),
-                tagValues=m4aTestFile['tagValues']
-            )
-            self.testAudioFilesM4A.append(testAudioFile)
-
-
-        self.notSupportedAudioFile = "{}.ogg".format(test.helpers.common.getRandomFilepath())
+        self.notSupportedAudioFile = "{}.wav".format(test.helpers.common.getRandomFilepath())
         self.notExistFile = test.helpers.common.getRandomFilepath()
 
+    def getTestFilesFromData(self, testAudioFilesDir, testFilesData):
+        testFiles = []
+        for testFile in testFilesData:
+            testAudioFile = TestAudioFile(
+                filepath=mypycommons.file.joinPaths(testAudioFilesDir, testFile['filename']),
+                tagValues=testFile['tagValues']
+            )
+            testFiles.append(testAudioFile)
+
+        return testFiles
 
 
 class TestTagsIOModule(unittest.TestCase):
@@ -162,6 +152,20 @@ class TestTagsIOModule(unittest.TestCase):
             handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
             self._checkAudioFileTagIOHandlerWrite(handler)
+
+    def test_AudioFileMetadataHandler_OggOpus(self):
+        '''
+        Tests tag reading/writing for a test Ogg Opus file.
+        '''
+        testFileData = self.testData.testAudioFilesOggOpus[0]
+        handler = mlu.tags.io.AudioFileMetadataHandler(testFileData.filepath)
+        tags = handler.getTags()
+
+
+        # for testAudioFile in self.testData.testAudioFilesOggOpus:
+        #     handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
+        #     self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
+        #     self._checkAudioFileTagIOHandlerWrite(handler)
 
     def _checkAudioFileTagIOHandlerRead(self, audioFileMetadataHandler, expectedTagValues):
         '''

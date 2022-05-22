@@ -133,5 +133,50 @@
 			}
 		}		
 	]
+},
+{
+	"filetype": "opus",
+	"testfiles": [
+        {
+			"filename": "test-1.opus", 
+			"tagValues": {
+				"title": "My Life In A Window",
+				"artist": "Edward",
+				"album": "Into A Better Future",
+				"albumArtist": "Various Artists",
+                "composer": "mommy",
+                "date": "2014",
+				"genre": "Electronic;Deep House",
+                "trackNumber": "3",
+                "totalTracks": "10",
+                "discNumber": "1",
+                "totalDiscs": "2",
+                "bpm": "156",
+                "key": "C#",
+                "lyrics": "these\r\nare\r\nthe\r\nlyrics",
+                "comment": "Tumen Collection",
+                "dateAdded": "2019-02-21 15:57:11",
+				"dateAllPlays": "2019-01-22 10:59:24;2019-01-29 10:59:24;2019-04-22 10:59:24;2019-10-22 10:59:24",
+				"dateLastPlayed": "2019-10-22 10:59:24",
+				"playCount": "12",
+				"votes": "7;2;4;6;4;5;1;5;6;3;2",
+				"rating": "5.3",
+                "OTHER_TAGS": [
+                    {
+                        "name": "discogs_release_id",
+                        "value": "6088701"
+                    },
+                    {
+                        "name": "discogs_master_release_videos",
+                        "value": "https://www.youtube.com/watch?v=3UkIwTbkUpo, https://www.youtube.com/watch?v=k54DUYBvnoE, https://www.youtube.com/watch?v=cn_XQFi1dDY, https://www.youtube.com/watch?v=brH5KE0pByU, https://www.youtube.com/watch?v=ldP9_WSZmJ8, https://www.youtube.com/watch?v=604WTLsSg0U, https://www.youtube.com/watch?v=SI6Si7xQX3s, https://www.youtube.com/watch?v=h17aJ93IMVo, https://www.youtube.com/watch?v=r9GkM4_N_Yg"
+                    },
+                    {
+                        "name": "testtag",
+                        "value": "two two three"
+                    }
+                ]
+			}
+		}		
+	]
 }
 ]
