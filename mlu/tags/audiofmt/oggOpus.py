@@ -27,7 +27,7 @@ class AudioFormatHandlerOggOpus:
         #     artworksData.append(picture.data)
         
         # return artworksData 
-        pass
+        raise NotImplementedError("getEmbeddedArtwork is not yet written for ogg opus")
 
     def getProperties(self):
         '''
@@ -64,7 +64,8 @@ class AudioFormatHandlerOggOpus:
         #     codec=''
         # )
         # return audioProperties
-        pass
+        raise NotImplementedError("getProperties is not yet written for ogg opus")
+
 
     def getTags(self):
         '''

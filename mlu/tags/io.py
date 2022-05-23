@@ -98,7 +98,7 @@ class AudioFileMetadataHandler:
         '''
         return self._audioFmtHandler.getEmbeddedArtwork()
 
-    def setCustomTag(tagName, value):
+    def setCustomTag(self, tagName, value):
         '''
         Sets the value of a given custom (nonstandard) tag for the audio file. 
         '''

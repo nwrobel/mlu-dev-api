@@ -134,6 +134,8 @@ class TestTagsIOModule(unittest.TestCase):
             handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
             self._checkAudioFileTagIOHandlerWrite(handler)
+
+            self.writeCustomTag_Test(handler)
             
     def test_AudioFileMetadataHandler_MP3(self):
         '''
@@ -144,6 +146,8 @@ class TestTagsIOModule(unittest.TestCase):
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
             self._checkAudioFileTagIOHandlerWrite(handler)
 
+            self.writeCustomTag_Test(handler)
+
     def test_AudioFileMetadataHandler_M4A(self):
         '''
         Tests tag reading/writing for a test M4A file.
@@ -153,6 +157,8 @@ class TestTagsIOModule(unittest.TestCase):
             self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)
             self._checkAudioFileTagIOHandlerWrite(handler)
 
+            self.writeCustomTag_Test(handler)
+
     def test_AudioFileMetadataHandler_OggOpus(self):
         '''
         Tests tag reading/writing for a test Ogg Opus file.
@@ -160,6 +166,8 @@ class TestTagsIOModule(unittest.TestCase):
         testFileData = self.testData.testAudioFilesOggOpus[0]
         handler = mlu.tags.io.AudioFileMetadataHandler(testFileData.filepath)
         tags = handler.getTags()
+
+        self.writeCustomTag_Test(handler)
 
 
         # for testAudioFile in self.testData.testAudioFilesOggOpus:
@@ -211,17 +219,17 @@ class TestTagsIOModule(unittest.TestCase):
             self.assertEqual(expectedTagValue, actualTagValues['OTHER_TAGS'][expectedTagName])
 
 
-    def _checkAudioFileTagIOHandlerWrite(self, audioFileTagIOHandler):
+    def _checkAudioFileTagIOHandlerWrite(self, audioFileMetadataHandler):
         '''
-        Tests tag writing for any given test AudioFileTagIOHandler instance. Used as a 
+        Tests tag writing for any given test AudioFileMetadataHandler instance. Used as a 
         helper function.
 
         The test will check that new tag values can be written via the handler.
 
         Params:
-            audioFileTagIOHandler: the handler instance to test (is defined with a test audio file type)
+            audioFileMetadataHandler: the handler instance to test (is defined with a test audio file type)
         '''
-        tags = audioFileTagIOHandler.getTags()
+        tags = audioFileMetadataHandler.getTags()
         newTagValues = {}
 
         newTagValues['dateAllPlays'] = test.helpers.common.getRandomString(length=20, allowSpecial=False)
@@ -236,10 +244,19 @@ class TestTagsIOModule(unittest.TestCase):
         tags.votes = newTagValues['votes']
         tags.rating = newTagValues['rating']
 
-        audioFileTagIOHandler.setTags(tags)
+        audioFileMetadataHandler.setTags(tags)
 
         # Use the read test function to ensure the tags are now set to the new tag values 
-        self._checkAudioFileTagIOHandlerRead(audioFileTagIOHandler, expectedTagValues=newTagValues)
+        self._checkAudioFileTagIOHandlerRead(audioFileMetadataHandler, expectedTagValues=newTagValues)
+
+    def writeCustomTag_Test(self, audioFileMetadataHandler):
+        testTagName = "test123"
+        testTagValue = "hello hello 123"
+        
+        audioFileMetadataHandler.setCustomTag(testTagName, testTagValue)
+
+        actualTags = audioFileMetadataHandler.getTags()
+        self.assertEqual(testTagValue, actualTags.OTHER_TAGS[testTagName])
 
 if __name__ == '__main__':
     unittest.main()
