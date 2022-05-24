@@ -3,6 +3,7 @@ Tests for mlu.tags.io, which also tests the mlu.tags.audiofmt modules.
 
 '''
 
+#from email.mime import audio
 import unittest
 import sys
 import os
@@ -136,7 +137,7 @@ class TestTagsIOModule(unittest.TestCase):
             self._checkAudioFileTagIOHandlerWrite(handler)
 
             self.writeCustomTag_Test(handler)
-            
+
     def test_AudioFileMetadataHandler_MP3(self):
         '''
         Tests tag reading/writing for a test Mp3 file.
@@ -168,8 +169,7 @@ class TestTagsIOModule(unittest.TestCase):
         tags = handler.getTags()
 
         self.writeCustomTag_Test(handler)
-
-
+        
         # for testAudioFile in self.testData.testAudioFilesOggOpus:
         #     handler = mlu.tags.io.AudioFileMetadataHandler(testAudioFile.filepath)
         #     self._checkAudioFileTagIOHandlerRead(handler, testAudioFile.tagValues)

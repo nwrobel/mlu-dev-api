@@ -69,9 +69,6 @@ class AudioFileMetadataHandler:
         DATE_ALL_PLAYS, DATE_LAST_PLAYED, PLAY_COUNT, VOTES, RATING
 
         Coming later: allowing you to also set genre, lyrics, comment
-        
-        Validation is performed on each tag value and an AudioFileTagsValidationError will be thrown
-        if any tag values are invalid.
         '''
 
         # TODO: perform validation here

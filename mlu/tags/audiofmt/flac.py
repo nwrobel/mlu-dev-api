@@ -20,13 +20,19 @@ class AudioFormatHandlerFLAC:
     def getEmbeddedArtwork(self):
         '''
         '''
-        mutagenInterface = mutagen.File(self.audioFilepath)
+        # mutagenInterface = mutagen.File(self.audioFilepath)
 
-        artworksData = []
-        for picture in mutagenInterface.pictures:
-            artworksData.append(picture.data)
+        # if (mutagenInterface.pictures):
+        #     artworksBinaryData = []
+        #     for picture in mutagenInterface.pictures:
+        #         artworksBinaryData.append(picture.data)
         
-        return artworksData 
+        #     return artworksBinaryData 
+
+        # else:
+        #     return None
+        raise NotImplementedError("Getting album artwork is not implemented yet (this will require use of an external program)")
+
 
     def getProperties(self):
         '''

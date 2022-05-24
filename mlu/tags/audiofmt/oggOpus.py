@@ -1,7 +1,7 @@
 '''
-mlu.tags.audiofmt.m4a
+mlu.tags.audiofmt.oggOpus
 
-Module containing class which reads data for a single m4a audio file.
+Module containing class which reads data for a single ogg OPUS audio file.
 '''
 
 import mutagen
@@ -22,26 +22,34 @@ class AudioFormatHandlerOggOpus:
         '''
         # mutagenInterface = mutagen.File(self.audioFilepath)
 
-        # artworksData = []
-        # for picture in mutagenInterface.pictures:
-        #     artworksData.append(picture.data)
-        
-        # return artworksData 
-        raise NotImplementedError("getEmbeddedArtwork is not yet written for ogg opus")
+        # try:
+        #     picturesStrList = mutagenInterface['metadata_block_picture']
+        # except KeyError:
+        #     picturesStrList = None
+
+        # artworksBinaryData = []
+        # if (picturesStrList):
+        #     for pictureStr in picturesStrList:
+        #         artworksBinaryData.append(pictureStr.encode('utf-8'))
+        #     return artworksBinaryData
+
+        # else:
+        #     return None
+        raise NotImplementedError("Getting album artwork is not implemented yet (this will require use of an external program)")
 
     def getProperties(self):
         '''
         '''
-        # mutagenInterface = mutagen.File(self.audioFilepath)
+        mutagenInterface = mutagen.File(self.audioFilepath)
 
-        # fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
-        # fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
-        # duration = mutagenInterface.info.length
-        # format = 'FLAC'
-        # bitRate = mypycommons.convert.bitsToKilobits(mutagenInterface.info.bitrate)
-        # bitDepth = mutagenInterface.info.bits_per_sample
-        # numChannels = mutagenInterface.info.channels
-        # sampleRate = mutagenInterface.info.sample_rate
+        fileSize = mypycommons.file.getFileSizeBytes(self.audioFilepath)
+        fileDateModified = mypycommons.time.formatTimestampForDisplay(mypycommons.file.getFileDateModifiedTimestamp(self.audioFilepath))
+        duration = mutagenInterface.info.length
+        format = 'OGG Opus'
+        #bitRate = mypycommons.convert.bitsToKilobits(mutagenInterface.info.bitrate)
+        #bitDepth = mutagenInterface.info.bits_per_sample
+        numChannels = mutagenInterface.info.channels
+        #sampleRate = mutagenInterface.info.sample_rate
         # replayGain = {
         #     'albumGain': self._getTagValueFromMutagenInterface(mutagenInterface, 'replaygain_album_gain'),
         #     'albumPeak': self._getTagValueFromMutagenInterface(mutagenInterface, 'replaygain_album_peak'),
@@ -49,22 +57,21 @@ class AudioFormatHandlerOggOpus:
         #     'trackPeak': self._getTagValueFromMutagenInterface(mutagenInterface, 'replaygain_track_peak')
         # }
 
-        # audioProperties = values.AudioFileProperties(
-        #     fileSize=fileSize,
-        #     fileDateModified=fileDateModified,
-        #     duration=duration,
-        #     format=format,
-        #     bitRate=bitRate,
-        #     sampleRate=sampleRate,
-        #     numChannels=numChannels,
-        #     replayGain=replayGain,
-        #     bitDepth=bitDepth,
-        #     encoder='',
-        #     bitRateMode='',
-        #     codec=''
-        # )
-        # return audioProperties
-        raise NotImplementedError("getProperties is not yet written for ogg opus")
+        audioProperties = values.AudioFileProperties(
+            fileSize=fileSize,
+            fileDateModified=fileDateModified,
+            duration=duration,
+            format=format,
+            bitRate=None,
+            sampleRate=None,
+            numChannels=numChannels,
+            replayGain=None,
+            bitDepth=None,
+            encoder=None,
+            bitRateMode=None,
+            codec=None
+        )
+        return audioProperties
 
 
     def getTags(self):

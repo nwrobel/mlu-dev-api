@@ -21,22 +21,24 @@ class AudioFormatHandlerM4A:
     def getEmbeddedArtwork(self):
         '''
         '''
-        mutagenInterface = mutagen.File(self.audioFilepath)
+        # mutagenInterface = mutagen.File(self.audioFilepath)
 
-        artworkData = []
-        try:
-            picsData = mutagenInterface.tags['covr']
-            if (isinstance(picsData, list)):
-                for picData in picsData:
-                    artworkData.append(bytes(picData))
+        # artworkBinaryData = []
+        # try:
+        #     picsData = mutagenInterface.tags['covr']
+        #     if (isinstance(picsData, list)):
+        #         for picData in picsData:
+        #             artworkBinaryData.append(bytes(picData))
             
-            else:
-                artworkData.append(bytes(picsData))
+        #     else:
+        #         artworkBinaryData.append(bytes(picsData))
 
-            return artworkData
+        #     return artworkBinaryData
 
-        except:
-            return []
+        # except KeyError:
+        #     return None
+        raise NotImplementedError("Getting album artwork is not implemented yet (this will require use of an external program)")
+
 
     def getProperties(self):
         '''

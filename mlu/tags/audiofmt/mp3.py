@@ -21,21 +21,27 @@ class AudioFormatHandlerMP3:
         self.audioFilepath = audioFilepath
 
     def getEmbeddedArtwork(self):
-        mutagenInterface = mutagen.File(self.audioFilepath)
+        # mutagenInterface = mutagen.File(self.audioFilepath)
 
-        artworksData = []
-        pictureTags = []
-        mutagenTagKeys = list(mutagenInterface.keys())
+        # pictureTags = []
+        # mutagenTagKeys = list(mutagenInterface.keys())
 
-        for tagKey in mutagenTagKeys:
-            if ("APIC:" in tagKey):
-                pictureTags.append(tagKey)
+        # for tagKey in mutagenTagKeys:
+        #     if ("APIC:" in tagKey):
+        #         pictureTags.append(tagKey)
 
-        for picTag in pictureTags:
-            picData = mutagenInterface[picTag].data
-            artworksData.append(picData)
+        # if (pictureTags):
+        #     artworksBinaryData = []
+        #     for picTag in pictureTags:
+        #         picData = mutagenInterface[picTag].data
+        #         artworksBinaryData.append(picData)
+                
+        #     return artworksBinaryData
 
-        return artworksData
+        # else:
+        #     return None
+        raise NotImplementedError("Getting album artwork is not implemented yet (this will require use of an external program)")
+
 
     def getProperties(self):
         mutagenInterface = mutagen.File(self.audioFilepath)
